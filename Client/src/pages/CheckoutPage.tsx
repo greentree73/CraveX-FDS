@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import { PLACE_ORDER } from "../graphql/mutations";
 import { CartItem } from "../types";
 

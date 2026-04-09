@@ -1,5 +1,6 @@
 type Props = {
   name: string;
+  address?: string;
   onClick: () => void;
 };
 

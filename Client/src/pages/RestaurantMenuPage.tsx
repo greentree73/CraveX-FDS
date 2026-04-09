@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client/react";
 import { GET_MENU_ITEMS, GET_RESTAURANTS } from "../graphql/queries";
 import MenuItemCard from "../components/MenuItemCard";
 import Loading from "../components/Loading";
-import { CartItem, MenuItem } from "../types";
+import { CartItem } from "../types";
 import {
   GetMenuItemsResponse,
   GetRestaurantsResponse,
@@ -17,33 +17,50 @@ export default function RestaurantMenuPage({
   restaurantId,
   onAddToCart,
 }: Props) {
-  const { data } = useQuery<GetMenuItemsResponse>(GET_MENU_ITEMS, {
+  const {
+    data: menuData,
+    loading: menuLoading,
+    error: menuError,
+  } = useQuery<GetMenuItemsResponse>(GET_MENU_ITEMS, {
     variables: { restaurantId },
   });
 
-  const { data: restaurantData } = useQuery<GetRestaurantsResponse>(GET_RESTAURANTS);
+  const {
+    data: restaurantData,
+    loading: restaurantLoading,
+    error: restaurantError,
+  } = useQuery<GetRestaurantsResponse>(GET_RESTAURANTS);
 
-  if (loading) return <Loading />;
-  if (error) return <div className="container py-5 text-danger">{error.message}</div>;
+  if (menuLoading || restaurantLoading) return <Loading />;
 
-  const restaurant = restaurantData?.restaurants?.find(
-    (r: any) => r._id === restaurantId,
+  if (menuError || restaurantError) {
+    return (
+      <div className="container py-5 text-danger">
+        {menuError?.message || restaurantError?.message}
+      </div>
+    );
+  }
+
+  const restaurant = restaurantData?.restaurants.find(
+    (r) => r._id === restaurantId,
   );
+
+  const menuItems = menuData?.menuItems || [];
 
   return (
     <div className="container py-4">
       <div className="mb-4">
         <img
           src="https://via.placeholder.com/1200x320"
-          alt={restaurant?.name}
+          alt={restaurant?.name || "Restaurant"}
           className="img-fluid rounded shadow"
         />
       </div>
 
-      <h2 className="mb-4">{restaurant?.name} Menu</h2>
+      <h2 className="mb-4">{restaurant?.name || "Restaurant Menu"}</h2>
 
       <div className="row g-4">
-        {data.menuItems.map((item: MenuItem) => (
+        {menuItems.map((item) => (
           <div className="col-12 col-md-6 col-lg-4" key={item._id}>
             <MenuItemCard
               name={item.name}
