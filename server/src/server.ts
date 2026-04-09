@@ -1,19 +1,119 @@
-import express from 'express';
-// import path from 'node:path';
-import db from './config/connection.js';
-import routes from './routes/index.js';
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@as-integrations/express4";
+import jwt from "jsonwebtoken";
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+import { typeDefs } from "./schema/typeDefs.js";
+import { resolvers } from "./schema/resolvers.js";
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+import { startOrderStatusUpdater } from "./services/orderStatusService.js";
 
-// Serves static files in the entire client's dist folder
-app.use(express.static('../client/dist'));
+const JWT_SECRET = process.env.JWT_SECRET || "super_secret_change_me";
+const PORT = process.env.PORT || 4000;
 
-app.use(routes);
+async function startServer() {
+  /* =======================
+     DB CONNECTION
+  ======================= */
+  const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/cravex";
 
-db.once('open', () => {
-  app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
+  await mongoose.connect(mongoUri);
+  console.log("📊 Connected to MongoDB:", mongoUri);
+
+  startOrderStatusUpdater(); 
+  console.log("⏱️ Order status updater started");
+
+  /* =======================
+     APOLLO SERVER
+  ======================= */
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    introspection: true,
+  });
+
+  await server.start();
+
+  const app = express();
+
+  /* =======================
+     BASIC ROUTES
+  ======================= */
+
+  app.get("/", (_req, res) => {
+    res.status(200).json({
+      message: "Welcome to CraveX 🚀",
+    });
+  });
+
+  app.get("/health", (_req, res) => {
+    res.status(200).json({
+      status: "ok",
+      service: "cravex-api",
+    });
+  });
+
+  /* =======================
+     GRAPHQL ENDPOINT
+  ======================= */
+
+  app.use(
+    "/graphql",
+    cors({
+      origin: (origin: any, callback: any) => {
+        if (!origin) return callback(null, true);
+
+        const ok = /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
+        callback(null, ok);
+      },
+      credentials: true,
+    }),
+    express.json(),
+
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        const auth = req.headers.authorization || "";
+
+        // No token
+        if (!auth.startsWith("Bearer ")) {
+          return { user: null };
+        }
+
+        const token = auth.slice(7);
+
+        try {
+          const payload = jwt.verify(token, JWT_SECRET) as {
+            id: string;
+            role: "customer" | "owner" | "admin";
+          };
+
+          return {
+            user: {
+              id: payload.id,
+              role: payload.role,
+            },
+          };
+        } catch (err) {
+          console.log("JWT Error:", err);
+          return { user: null };
+        }
+      },
+    }),
+  );
+
+  /* =======================
+     START SERVER
+  ======================= */
+
+  app.listen(PORT, () => {
+    console.log(`🚀 GraphQL ready at http://localhost:${PORT}/graphql`);
+  });
+}
+
+startServer().catch((error) => {
+  console.error("❌ Server failed to start:", error);
+  process.exit(1);
 });
