@@ -361,6 +361,12 @@ export const resolvers = {
     },
   },
 
+  Order: {
+    restaurant: async (parent: any) => {
+      return await Restaurant.findById(parent.restaurantId);
+    },
+  },
+
   Category: {
     restaurants: async (parent: any) => {
       return Restaurant.find({ categoryIds: parent._id });

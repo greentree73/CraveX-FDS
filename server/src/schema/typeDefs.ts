@@ -111,6 +111,7 @@ export const typeDefs = `#graphql
     totalAmount: Float!
     orderItems: [OrderItem!]!
     restaurantId: ID!
+    restaurant: Restaurant
     customerId: ID!
     driverId: ID
     createdAt: String!

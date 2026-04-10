@@ -50,7 +50,7 @@ export default function CategoryRestaurantsPage({
           <div className="col-12 col-md-6 col-lg-4" key={restaurant._id}>
             <RestaurantCard
               name={restaurant.name}
-              address={restaurant.address}
+              image="https://via.placeholder.com/400x250"
               onClick={() => onRestaurantSelect(restaurant._id)}
             />
           </div>

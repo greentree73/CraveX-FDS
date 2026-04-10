@@ -11,6 +11,7 @@ export type Category = {
   _id: string;
   name: string;
   description?: string;
+  image?: string;
 };
 
 export type Restaurant = {
@@ -18,6 +19,7 @@ export type Restaurant = {
   name: string;
   address: string;
   phone?: string;
+  image?: string;
   categoryIds: string[];
 };
 
@@ -38,7 +40,12 @@ export type Order = {
   _id: string;
   status: string;
   totalAmount: number;
+  createdAt?: string;
   restaurantId: string;
+  restaurant?: {
+    _id: string;
+    name: string;
+  };
   customerId: string;
   driverId?: string;
   orderItems: {

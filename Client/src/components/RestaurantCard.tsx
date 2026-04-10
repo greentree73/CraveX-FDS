@@ -1,19 +1,32 @@
 type Props = {
   name: string;
-  address?: string;
+  image: string;
   onClick: () => void;
 };
 
-export default function CategoryCard({ name, onClick }: Props) {
+export default function RestaurantCard({
+  name,
+  image,
+  onClick,
+}: Props) {
   return (
-    <div className="card h-100 text-center shadow-sm" onClick={onClick} style={{ cursor: "pointer" }}>
+    <div
+      className="card shadow-sm h-100"
+      onClick={onClick}
+      style={{ cursor: "pointer", borderRadius: "12px", overflow: "hidden" }}
+    >
       <img
-        src="https://via.placeholder.com/160x120"
+        src={image}
         alt={name}
         className="card-img-top"
+        style={{
+          height: "160px",
+          objectFit: "cover",
+        }}
       />
-      <div className="card-body">
-        <h6 className="card-title mb-0">{name}</h6>
+
+      <div className="card-body text-center py-2">
+        <h6 className="mb-0">{name}</h6>
       </div>
     </div>
   );

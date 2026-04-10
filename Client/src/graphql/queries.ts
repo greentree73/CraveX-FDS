@@ -40,7 +40,11 @@ export const GET_ORDERS = gql`
       _id
       status
       totalAmount
-      restaurantId
+      createdAt
+      restaurant {
+        _id
+        name
+      }
       customerId
       driverId
       orderItems {
