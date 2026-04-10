@@ -1,82 +1,61 @@
-import { useState } from "react";
-import { useMutation } from "@apollo/client/react";
-import { LOGIN_USER } from "../graphql/mutations";
-import { LoginResponse } from "../types/graphql";
+import { useQuery } from "@apollo/client/react";
+import { GET_RESTAURANTS } from "../graphql/queries";
+import RestaurantCard from "../components/RestaurantCard";
+import Loading from "../components/Loading";
+import { GetRestaurantsResponse } from "../types/graphql";
 
 type Props = {
-  onSuccess: () => void;
-  onSwitchToSignUp: () => void;
+  onRestaurantSelect: (id: string) => void;
 };
 
-export default function SignInPage({ onSuccess, onSwitchToSignUp }: Props) {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+const restaurantImages: Record<string, string> = {
+  "Pizza Hub": "/images/restaurants/pizza-hub.jpg",
+  "Bombay Bites": "/images/restaurants/bombay-bites.jpg",
+  "Thai Spice Kitchen": "/images/restaurants/thai-spice-kitchen.jpg",
+  "Dragon Wok": "/images/restaurants/dragon-wok.jpg",
+  "Morning Bakery Cafe": "/images/restaurants/morning-bakery-cafe.jpg",
+  "Smoothie Stop": "/images/restaurants/smoothie-stop.jpg",
+  "Sub Station": "/images/restaurants/sub-station.jpg",
+  "Wing World": "/images/restaurants/wing-world.jpg",
+  "Ocean Catch": "/images/restaurants/ocean-catch.jpg",
+  "Scoops Delight": "/images/restaurants/scoops-delight.jpg",
+  "Smokehouse BBQ": "/images/restaurants/smokehouse-bbq.jpg",
+  "Little Italy Pasta House": "/images/restaurants/pasta-house.jpg",
+  "Tokyo Bento": "/images/restaurants/tokyo-bento.jpg",
+  "Saigon Bowl": "/images/restaurants/saigon-bowl.jpg",
+};
 
-  const [login, { loading, error }] = useMutation<LoginResponse>(LOGIN_USER);
+export default function BrowsePage({ onRestaurantSelect }: Props) {
+  const { data, loading, error } =
+    useQuery<GetRestaurantsResponse>(GET_RESTAURANTS);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  if (loading) return <Loading />;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  if (error) {
+    return (
+      <div className="container py-5 text-danger">
+        {error.message}
+      </div>
+    );
+  }
 
-    const { data } = await login({
-      variables: {
-        email: formData.email,
-        password: formData.password,
-      },
-    });
-
-    if (data?.login?.token) {
-      localStorage.setItem("token", data.login.token);
-      localStorage.setItem("user", JSON.stringify(data.login.user));
-      onSuccess();
-    }
-  };
+  const restaurants = data?.restaurants || [];
 
   return (
-    <div className="container py-5">
-      <div className="col-md-6 mx-auto card shadow p-4">
-        <h2 className="mb-4">Sign In</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            className="form-control mb-3"
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="form-control mb-3"
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <button
-            className="btn btn-danger w-100"
-            type="submit"
-            disabled={loading}
-          >
-            {loading ? "Signing In..." : "Sign In"}
-          </button>
-        </form>
-
-        {error && <p className="text-danger mt-3">{error.message}</p>}
-
-        <button className="btn btn-link mt-2" onClick={onSwitchToSignUp}>
-          Need an account? Sign Up
-        </button>
+    <div className="container py-4">
+      <div className="row g-4">
+        {restaurants.map((restaurant) => (
+          <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={restaurant._id}>
+            <RestaurantCard
+              name={restaurant.name}
+              image={
+                restaurantImages[restaurant.name] ||
+                "/images/restaurants/placeholder.jpg"
+              }
+              onClick={() => onRestaurantSelect(restaurant._id)}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 
 interface IOrderItem extends Document {
   quantity: number;
@@ -19,6 +19,9 @@ interface IOrder extends Document {
   restaurantId: Schema.Types.ObjectId;
   customerId: Schema.Types.ObjectId;
   driverId?: Schema.Types.ObjectId;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const OrderSchema = new Schema<IOrder>(

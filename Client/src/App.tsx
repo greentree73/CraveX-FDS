@@ -116,14 +116,14 @@ export default function App() {
           />
         )}
 
-        {page === "signin" && (
+        {page === "signin" && !isSignedIn && (
           <SignInPage
             onSuccess={handleLoginSuccess}
             onSwitchToSignUp={() => setPage("signup")}
           />
         )}
 
-        {page === "signup" && (
+        {page === "signup" && !isSignedIn && (
           <SignUpPage
             onSuccess={handleLoginSuccess}
             onSwitchToSignIn={() => setPage("signin")}
@@ -133,13 +133,13 @@ export default function App() {
         {page === "browse" && isSignedIn && (
           <BrowsePage
             onCategorySelect={(id) => {
-              setSelectedCategoryId(id);
-              setPage("categoryRestaurants");
-            }}
-            onRestaurantSelect={(id) => {
-              setSelectedRestaurantId(id);
-              setPage("restaurantMenu");
-            }}
+            setSelectedCategoryId(id);
+            setPage("categoryRestaurants");
+          }}
+          onRestaurantSelect={(id) => {
+          setSelectedRestaurantId(id);
+          setPage("restaurantMenu");
+          }}
           />
         )}
 

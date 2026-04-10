@@ -13,30 +13,40 @@ export default function OrdersPage() {
   if (error) {
     return <div className="container py-5 text-danger">{error.message}</div>;
   }
+  
 
   return (
     <div className="container py-4">
       <h2 className="mb-4">Order History</h2>
 
       <div className="row g-3">
-        {data?.orders?.map((order) => (
-          <div className="col-12" key={order._id}>
-            <div className="card shadow-sm">
-              <div className="card-body d-flex justify-content-between align-items-center">
-                <div>
-                  <h5 className="mb-1">Order #{order._id}</h5>
-                  <p className="mb-1">Restaurant ID: {order.restaurantId}</p>
-                  <p className="mb-0">
-                    Total: ${order.totalAmount.toFixed(2)}
-                  </p>
+         {data?.orders?.map((order) => {
+          const formattedDate = order.createdAt
+            ? new Date(Number(order.createdAt)).toLocaleString()
+            : "N/A";
+
+          return (
+            <div className="col-12" key={order._id}>
+              <div className="card shadow-sm">
+                <div className="card-body d-flex justify-content-between align-items-center">
+                  <div>
+                    <h5 className="mb-1">Order #{order._id.slice(-6)}</h5>
+                    <p className="mb-1">
+                      Restaurant: {order.restaurant?.name || "Unknown Restaurant"}
+                    </p>
+                    <p className="mb-1">Placed: {formattedDate}</p>
+                    <p className="mb-0">
+                      Total: ${order.totalAmount.toFixed(2)}
+                    </p>
+                  </div>
+                  <span className="badge bg-warning text-dark fs-6">
+                    {order.status}
+                  </span>
                 </div>
-                <span className="badge bg-warning text-dark fs-6">
-                  {order.status}
-                </span>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

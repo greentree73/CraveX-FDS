@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="container d-flex flex-wrap justify-content-between gap-3">
         <div>
           <h5 className="mb-1">CraveX</h5>
-          <small>Delicious food delivered fast.</small>
+          <small>Delicious food delivered fast</small>
         </div>
         <div className="d-flex gap-3">
           <a href="#" className="text-white text-decoration-none">About</a>
