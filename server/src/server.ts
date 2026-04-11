@@ -45,18 +45,18 @@ async function startServer() {
      BASIC ROUTES
   ======================= */
 
-  app.get("/", (_req, res) => {
-    res.status(200).json({
-      message: "Welcome to CraveX 🚀",
-    });
-  });
+  // app.get("/", (_req, res) => {
+  //   res.status(200).json({
+  //     message: "Welcome to CraveX 🚀",
+  //   });
+  // });
 
-  app.get("/health", (_req, res) => {
-    res.status(200).json({
-      status: "ok",
-      service: "cravex-api",
-    });
-  });
+  // app.get("/health", (_req, res) => {
+  //   res.status(200).json({
+  //     status: "ok",
+  //     service: "cravex-api",
+  //   });
+  // });
 
   /* =======================
      GRAPHQL ENDPOINT
