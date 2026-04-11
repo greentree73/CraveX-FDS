@@ -7,7 +7,7 @@ import MenuItem from "../models/MenuItem.js";
 import Driver from "../models/Driver.js";
 import Order from "../models/Order.js";
 import Payment from "../models/Payment.js";
-const MONGO_URI = "mongodb://127.0.0.1:27017/cravex";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/cravex";
 const seed = async () => {
     try {
         await mongoose.connect(MONGO_URI);
