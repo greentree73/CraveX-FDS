@@ -10,7 +10,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/graphql': {
-        changeOrigin: true,
+        changeOrigin: false,
       },
     },
   },
