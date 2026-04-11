@@ -31,6 +31,7 @@ export default function SignUpPage({
     phone: "",
     address: "",
     password: "",
+    
   });
 
   const [register, { loading, error }] =

@@ -5,14 +5,20 @@ import mongoose from "mongoose";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express4";
 import jwt from "jsonwebtoken";
+import path from "path";
+import { fileURLToPath } from "url";
+
 
 import { typeDefs } from "./schema/typeDefs.js";
 import { resolvers } from "./schema/resolvers.js";
+
 
 import { startOrderStatusUpdater } from "./services/orderStatusService.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "super_secret_change_me";
 const API_KEY = process.env.API_KEY || "my_api_key";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PORT = process.env.PORT || 4000;
 
@@ -40,6 +46,13 @@ async function startServer() {
   await server.start();
 
   const app = express();
+
+  const clientBuildPath = path.resolve(__dirname, "../../client/dist");
+  app.use(express.static(clientBuildPath));
+
+  app.get(/^(?!\/graphql).*/, (_req, res) => {
+    res.sendFile(path.join(clientBuildPath, "index.html"));
+  });
 
   /* =======================
      BASIC ROUTES
