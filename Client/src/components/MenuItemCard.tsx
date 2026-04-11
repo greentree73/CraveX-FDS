@@ -1,16 +1,18 @@
 type Props = {
   name: string;
   price: number;
+  image: string;
   onAdd: () => void;
 };
 
-export default function MenuItemCard({ name, price, onAdd }: Props) {
+export default function MenuItemCard({ name, price, image, onAdd }: Props) {
   return (
     <div className="card h-100 shadow-sm">
       <img
-        src="https://via.placeholder.com/420x260"
+        src={image}
         alt={name}
         className="card-img-top"
+        style={{ height: "180px", objectFit: "cover" }}
       />
       <div className="card-body">
         <h5 className="card-title">{name}</h5>

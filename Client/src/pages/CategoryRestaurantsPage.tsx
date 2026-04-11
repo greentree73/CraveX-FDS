@@ -7,10 +7,13 @@ import {
   GetRestaurantsResponse,
 } from "../types/graphql";
 
+import { getRestaurantImage } from "../utils/restaurantImages";
+
 type Props = {
   categoryId: string;
   onRestaurantSelect: (id: string) => void;
 };
+
 
 export default function CategoryRestaurantsPage({
   categoryId,
@@ -50,7 +53,10 @@ export default function CategoryRestaurantsPage({
           <div className="col-12 col-md-6 col-lg-4" key={restaurant._id}>
             <RestaurantCard
               name={restaurant.name}
-              image="https://via.placeholder.com/400x250"
+              image={
+                getRestaurantImage(restaurant.name) ||
+                "/images/restaurants/placeholder.jpg"
+              }
               onClick={() => onRestaurantSelect(restaurant._id)}
             />
           </div>

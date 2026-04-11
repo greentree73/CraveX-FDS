@@ -7,6 +7,8 @@ import {
   GetMenuItemsResponse,
   GetRestaurantsResponse,
 } from "../types/graphql";
+import { getRestaurantImage } from "../utils/restaurantImages";
+import { getMenuItemImage } from "../utils/menuItemImages";
 
 type Props = {
   restaurantId: string;
@@ -51,9 +53,10 @@ export default function RestaurantMenuPage({
     <div className="container py-4">
       <div className="mb-4">
         <img
-          src="https://via.placeholder.com/1200x320"
+          src={getRestaurantImage(restaurant?.name)}
           alt={restaurant?.name || "Restaurant"}
           className="img-fluid rounded shadow"
+          style={{ width: "100%", height: "280px", objectFit: "cover" }}
         />
       </div>
 
@@ -64,6 +67,7 @@ export default function RestaurantMenuPage({
           <div className="col-12 col-md-6 col-lg-4" key={item._id}>
             <MenuItemCard
               name={item.name}
+              image={getMenuItemImage(item.name)}
               price={item.price}
               onAdd={() => onAddToCart({ ...item, quantity: 1 })}
             />
