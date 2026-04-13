@@ -16,7 +16,6 @@ import { resolvers } from "./schema/resolvers.js";
 import { startOrderStatusUpdater } from "./services/orderStatusService.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "super_secret_change_me";
-const API_KEY = process.env.API_KEY || "my_api_key";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -74,7 +73,7 @@ async function startServer() {
   /* =======================
      GRAPHQL ENDPOINT
   ======================= */
-
+ 
   app.use(
     "/graphql",
     cors({
@@ -91,12 +90,6 @@ async function startServer() {
     expressMiddleware(server, {
       context: async ({ req }) => {
 
-        const apiKey = req.headers["x-api-key"];
-
-        // Check API key first
-        if (apiKey !== API_KEY) {
-          throw new Error("Invalid API key");
-        }
 
         const auth = req.headers.authorization || "";
 

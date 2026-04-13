@@ -3,8 +3,12 @@ import { HttpLink } from "@apollo/client/link/http";
 
 // HTTP link to GraphQL backend
 const httpLink = new HttpLink({
-  uri: "http://localhost:4000/graphql",
+   uri:
+    window.location.hostname === "localhost"
+      ? "http://localhost:4000/graphql"
+      : "/graphql",
 });
+
 
 // Authentication link using ApolloLink (no setContext)
 const authLink = new ApolloLink((operation, forward) => {
@@ -16,7 +20,7 @@ const authLink = new ApolloLink((operation, forward) => {
   operation.setContext({
     headers: {
       authorization: token ? `Bearer ${token}` : "",
-      "x-api-key": "my_api_key",
+      
     },
   });
 
