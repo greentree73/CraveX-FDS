@@ -71,7 +71,6 @@ Create .env file:
 PORT=4000
 MONGO_URI=mongodb://localhost:27017/cravex
 JWT_SECRET=your_secret_key
-API_KEY=your_api_key
 
 Run backend:
 npm run build
@@ -89,7 +88,7 @@ npm install
 npm run develop
 
 🌐 Application URLs
-• Frontend: http://localhost:3000
+• Frontend: http://localhost:5173
 • Backend (GraphQL): http://localhost:4000/graphql
 
 🎯 Usage
@@ -124,7 +123,7 @@ npm run develop
 • 🤖 AI-based recommendations
 
 🔗 Links
-• 🌐 Deployed App:
+• 🌐 Deployed App: https://cravex-fds.onrender.com/
 • 💻 GitHub Repo: https://github.com/greentree73/CraveX-FDS
 
 👤 Author
